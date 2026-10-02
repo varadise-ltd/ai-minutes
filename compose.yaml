@@ -1,0 +1,51 @@
+name: ai-minutes
+services:
+  app:
+    build: .
+    image: ai-minutes-platform:local
+    restart: unless-stopped
+    init: true
+    ports:
+      - "127.0.0.1:5000:5000"
+      - "127.0.0.1:5001:5001"
+    environment:
+      DATABASE_URL: postgres://minutes:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}@db:5432/minutes
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Set ENCRYPTION_KEY}
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:5000}
+      MOBILE_ORIGIN: ${MOBILE_ORIGIN:-}
+      LOCAL_ORIGINS: ${LOCAL_ORIGINS:-}
+      ENABLE_DEMO: ${ENABLE_DEMO:-true}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      LLM_ALLOWED_HOSTS: ${LLM_ALLOWED_HOSTS:-api.openai.com,openrouter.ai}
+      LLM_ALLOWED_HTTP_ORIGINS: ${LLM_ALLOWED_HTTP_ORIGINS-http://localhost:20128,http://127.0.0.1:20128,http://[::1]:20128,http://host.docker.internal:20128}
+      LLM_LOOPBACK_HOST: host.docker.internal
+      CAPTURE_WORKER_ALLOWED_ORIGINS: ${CAPTURE_WORKER_ALLOWED_ORIGINS-http://host.docker.internal:8010,http://host.docker.internal:8020,http://localhost:8010,http://localhost:8020,http://teams-media-worker:8010,http://zoom-rtms-worker:8020}
+      DATA_DIR: /app/data
+    volumes:
+      - recordings:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+  db:
+    image: postgres:17-bookworm
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:7654:5432"
+    environment:
+      POSTGRES_DB: minutes
+      POSTGRES_USER: minutes
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U minutes -d minutes"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+volumes:
+  database:
+  recordings:

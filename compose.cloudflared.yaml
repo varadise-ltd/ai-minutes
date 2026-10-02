@@ -1,0 +1,16 @@
+services:
+  cloudflared:
+    # Remotely managed tunnel. Define its public hostname and origin in the
+    # Cloudflare dashboard; this container only maintains the outbound tunnel.
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_started
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?Set TUNNEL_TOKEN in .env.cloudflared}
+    command: tunnel --no-autoupdate run
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL

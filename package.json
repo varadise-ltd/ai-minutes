@@ -1,0 +1,33 @@
+{
+  "name": "ai-minutes-platform",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "node --env-file=.env services/api/server.mjs",
+    "start": "node services/api/server.mjs",
+    "build": "npm run build --workspace apps/web",
+    "test": "node --test tests/*.test.mjs",
+    "test:integration": "node --env-file=.env --test tests/integration/*.test.mjs"
+  },
+  "dependencies": {
+    "@azure/msal-node": "^3.8.0",
+    "cookie-parser": "^1.4.7",
+    "decimal.js": "^10.6.0",
+    "docx": "^9.5.1",
+    "docxtemplater": "^3.70.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "lodash": "^4.18.1",
+    "multer": "^2.0.2",
+    "opencc-js": "^1.4.2",
+    "pdfkit": "^0.17.2",
+    "pg": "^8.16.3",
+    "pizzip": "^3.2.0",
+    "zod": "^4.1.11"
+  }
+}
