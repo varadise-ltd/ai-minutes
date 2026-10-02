@@ -1,0 +1,9 @@
+export async function api(url,options={}){const r=await fetch('/api'+url,{...options,headers:options.body instanceof FormData?options.headers:{'Content-Type':'application/json',...options.headers},body:options.body&&!(options.body instanceof FormData)?JSON.stringify(options.body):options.body});let data;try{data=await r.json();}catch{throw new Error('Invalid server response.');}if(!r.ok)throw Object.assign(new Error(data.error||'Request failed'),{status:r.status});return data;}
+export const labels={DRAFT:'No minutes taker',SCHEDULED:'Scheduled',SETUP_REQUIRED:'Setup required',UPLOADED:'Recording uploaded',WAITING_FOR_ADMISSION:'Waiting in lobby',CAPTURING:'Capturing',TRANSCRIBING_FINAL:'Transcribing',GENERATING_MINUTES:'Generating minutes',READY_FOR_REVIEW:'Ready for review',IN_REVIEW:'Awaiting approval',APPROVED:'Approved',REJECTED:'Changes requested',CANCELLED:'Cancelled',FAILED:'Needs attention'};
+export const formatDate=(date,opts={})=>new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',...opts}).format(new Date(date));
+Object.assign(labels,{JOINING_CALL:'Joining meeting',WAITING_FOR_HOST:'Waiting for host · RTMS',IN_CALL_NOT_RECORDING:'Connected · not recording',PROCESSING_RECORDING:'Preparing recording',STOPPING_CAPTURE:'Stopping capture'});
+export const time=date=>formatDate(date,{hour:'2-digit',minute:'2-digit',hour12:false});
+export const dateKey=date=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong'}).format(new Date(date));
+export const localInput=(date=new Date())=>new Date(new Date(date).getTime()+8*3600000).toISOString().slice(0,16);
+export const stamp=seconds=>`${Math.floor(seconds/60)}:${String(Math.floor(seconds%60)).padStart(2,'0')}`;
+export const allowed=(user,...roles)=>user.roles.includes('ORG_ADMIN')||roles.some(r=>user.roles.includes(r));

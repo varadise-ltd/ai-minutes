@@ -1,0 +1,10 @@
+{
+  "version": "0.0.1",
+  "services": {
+    "svc:minutes-taker": {
+      "endpoints": {
+        "tcp:443": "http://host.docker.internal:5000"
+      }
+    }
+  }
+}
