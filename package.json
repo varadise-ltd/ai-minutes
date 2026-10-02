@@ -14,7 +14,7 @@
     "test:integration": "node --env-file=.env --test tests/integration/*.test.mjs"
   },
   "dependencies": {
-    "@azure/msal-node": "^3.8.0",
+    "@azure/msal-node": "^7.0.0",
     "cookie-parser": "^1.4.7",
     "decimal.js": "^10.6.0",
     "docx": "^9.5.1",
